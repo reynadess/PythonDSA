@@ -1,36 +1,86 @@
-class Node:
-    def __init__(self, data=0):
-        self.data = data
-        self.next = None
+from LinkedList.LinkedListInterface import LinkedListInterface
+from typing import Optional
 
 
-class SingleLinkedList:
-    def __init__(self):
-        self.head = None
-        self.tail = None
+class SingleLinkedList(LinkedListInterface):
+    def __init__(self, arr=None):
+        super().__init__(arr)
+
+    class Node:
+        def __init__(self, data=0):
+            self.data = data
+            self.next = None
+
+        def __str__(self):
+            return str(self.data)
 
     def append(self, data):
-        self.tail.next = Node(data)
+        self.tail.next = self.Node(data)
         self.tail = self.tail.next
 
     def arr_to_linked_list(self, arr: list):
+        if not arr:
+            return
         if self.head is None:
-            self.head = Node(arr[0])
+            self.head = self.Node(arr[0])
             self.tail = self.head
         for idx in range(1, len(arr)):
             self.append(arr[idx])
 
-    def __str__(self):
+    def reverse(self):
+        if not self.head or not self.head.next:
+            return self.head
+
+        prev_node = None
         curr_node = self.head
-        print_str = ""
+        next_node = self.head.next
+        self.tail = self.head
+        self.tail.next = None
         while curr_node:
-            print_str += str(curr_node.data) + " "
-            curr_node = curr_node.next
-        return print_str
+            curr_node.next = prev_node
+            prev_node = curr_node
+            if not next_node:
+                self.head = prev_node
+                return self.head
+            curr_node = next_node
+            next_node = next_node.next
+
+    def recursive_reverse(self, head, prev=None):
+        if not head or not head.next:
+            return head
+        if not head.next:
+            head.next = prev
+            return head
+
+        new_head = self.recursive_reverse(head.next, head)
+        head.next = prev
+        return new_head
+
+    def detectCycle(self, head: Optional[Node]) -> Optional[Node]:
+        if not head or not head.next:
+            return None
+
+        slow_ptr = head
+        fast_ptr = head
+        while True:
+            slow_ptr = slow_ptr.next
+            if not fast_ptr.next or not fast_ptr.next.next:
+                return None
+            fast_ptr = fast_ptr.next.next
+            if slow_ptr == fast_ptr:
+                return slow_ptr
+
+        slow_ptr = head
+        while True:
+            if slow_ptr == fast_ptr:
+                return slow_ptr
+            slow_ptr = slow_ptr.next
+            fast_ptr = fast_ptr.next
+        return None
 
 
 if __name__ == '__main__':
-    single_linked_list = SingleLinkedList()
-    elements = [5, 6, 7, 78]
-    single_linked_list.arr_to_linked_list(elements)
-    print(single_linked_list)
+    single_linked_list = SingleLinkedList([5, 6, 7, 0])
+    single_linked_list.tail.next = single_linked_list.head.next.next
+    print(single_linked_list.detectCycle(single_linked_list.head))
+

@@ -1,17 +1,22 @@
-class Node:
-    def __init__(self, data=0):
-        self.data = data
-        self.next = None
-        self.prev = None
+from LinkedList.LinkedListInterface import LinkedListInterface
 
 
-class DoublyLinkedList:
-    def __init__(self):
-        self.head = None
-        self.tail = None
+class DoublyLinkedList(LinkedListInterface):
+
+    def __init__(self, arr=None):
+        super.__init__(arr)
+
+    class Node:
+        def __init__(self, data=0):
+            self.data = data
+            self.next = None
+            self.prev = None
+
+        def __str__(self):
+            return str(self.data)
 
     def append(self, data):
-        self.tail.next = Node(data)
+        self.tail.next = self.Node(data)
         self.tail.next.prev = self.tail
         self.tail = self.tail.next
 
@@ -19,22 +24,13 @@ class DoublyLinkedList:
         if not arr:
             return
         if self.head is None:
-            self.head = Node(arr[0])
+            self.head = self.Node(arr[0])
             self.tail = self.head
         for idx in range(1, len(arr)):
             self.append(arr[idx])
 
-    def __str__(self):
-        curr_node = self.head
-        print_str = ""
-        while curr_node:
-            print_str += str(curr_node.data) + " "
-            curr_node = curr_node.next
-        return print_str
-
 
 if __name__ == '__main__':
-    single_linked_list = DoublyLinkedList()
-    elements = [5, 6, 7, 78]
-    single_linked_list.arr_to_linked_list(elements)
-    print(single_linked_list)
+    doubly_linked_list = DoublyLinkedList([5, 6, 7, 78, 1, 21])
+    print(doubly_linked_list)
+    print(doubly_linked_list.find_mid())
