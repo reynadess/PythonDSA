@@ -78,9 +78,34 @@ class SingleLinkedList(LinkedListInterface):
             fast_ptr = fast_ptr.next
         return None
 
+    def removeZeroSumSublists(self, head: Optional[Node]) -> Optional[Node]:
+        prevPtr = None
+        startPtr = head
+        endPtr = head
+        sum = 0
+        while startPtr:
+            flag = False
+            while endPtr:
+                sum += endPtr.data
+                endPtr = endPtr.next
+                if sum == 0:
+                    if prevPtr:
+                        prevPtr.next = endPtr
+                        startPtr = endPtr
+                    else:
+                        head = endPtr
+                        startPtr = endPtr
+                    flag = True
+                    break
+            if not flag:
+                prevPtr = startPtr
+                startPtr = startPtr.next
+                endPtr = startPtr
+                sum = 0
+        return head
+
 
 if __name__ == '__main__':
-    single_linked_list = SingleLinkedList([5, 6, 7, 0])
-    single_linked_list.tail.next = single_linked_list.head.next.next
-    print(single_linked_list.detectCycle(single_linked_list.head))
+    single_linked_list = SingleLinkedList([1,2,3,-3,4])
+    print(single_linked_list.removeZeroSumSublists(single_linked_list.head))
 
